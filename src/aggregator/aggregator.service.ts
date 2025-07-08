@@ -12,7 +12,7 @@ export class AggregatorService {
   }
 
   getPayouts() {
-    return this.model.find({ payout: { $gt: 0 } }, { _id: 1, payout: 1 }).lean();
+    return this.model.find({ payout: { $gt: 0 } }, { _id: 1, payout: 1, userId: 1 }).lean();
   }
 
   async updateFromTransaction(tx: any) {
