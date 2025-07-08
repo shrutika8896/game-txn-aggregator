@@ -33,7 +33,6 @@ npm run start:dev
 GET /user/:userId/summary     → user aggregation
 GET /payouts                  → list of requested payouts
 ```
-
 ---
 
 📘 Implementation Overview
@@ -47,31 +46,48 @@ balance
 
 A cron-based background job runs every 12 seconds and fetches up to 5 pages (1000 transactions each) using an afterId pointer. This ID is stored in MongoDB (sync_state collection) to ensure resumption in case of service restarts.
 
-Data is exposed via:
-/user/:userId/summary: Returns balance and aggregation
-/payouts: Returns users who requested payouts, aggregated per user
-
 ✅ Assumptions
 - Transactions are returned in chronological order and contain a unique, sortable id.
 - The external transaction API supports pagination using afterId (or can be adapted to).
 - No transaction retry or deduplication logic needed — all transactions are unique and processed exactly once.
 - Transactions older than afterId are guaranteed to have already been processed.
 
-🔮 Future Scope
-⏳ Backfill/Replay Mechanism
-To handle overload spikes, a replay queue can be added to process missed data.
-🗂️ User Metadata Integration
-User profiles or bank data can be merged with aggregates.
-📦 Distributed Worker Support
-Add job queues (e.g. BullMQ) and workers to parallelize aggregation at scale.
-🧪 Testing & Monitoring
-Add integration tests, observability (e.g. Prometheus), and logging pipelines.
-🧰 Swagger/OpenAPI Docs
-Add endpoint documentation for easier integration.
+## 🛠️ Running Multiple Aggregators in Parallel
+If you want to horizontally scale the aggregator service by running multiple instances in parallel, `afterId`-based pagination must be adjusted to avoid duplication or data loss.
 
+The current implementation assumes a single global `afterId` pointer. If multiple instances use this shared cursor, it can cause:
+- Duplicate transaction processing
+- Skipped transactions
+- Race conditions updating `afterId`
 
+#### Replace `afterId` with a Distributed Job Queue
+Use a job queue like **BullMQ**, **RabbitMQ**, or **Kafka** to split fetch jobs by ID or time. Each worker processes its own batch without relying on a shared pointer.
 
+#### Use a Locking Cursor If Staying with afterId
+If sticking to `afterId`, introduce a **lock mechanism**:
+- A shared `sync_state` doc tracks the cursor
+- Workers acquire the lock, process a page, update `afterId`, release
 
+## Separate out read aggregator logic in a different microservice 
+- Heavy reads can slow down aggregation
+- Simplify scaling
+- Use MongoDB read replicas
 
+### ✔️ Testing
+- **Unit Tests**: Validate core logic (e.g., aggregation, payout calculation)
+- **Integration Tests**: Test MongoDB operations and API response structure
+- **E2E Tests**: Verify full flow from API → DB → Aggregated response
+- **Load Tests**: Stress test endpoints to simulate high user traffic
+- **Static Analysis**: Type checks (TypeScript), code style, linting
+
+### 🧩 TDD Approach
+1. Write failing test for each unit:
+  Aggregator logic (e.g., "earned + spent = balance")
+  Pagination from API using afterId
+  Payout summarization
+  Deduplication
+2. Implement logic minimally to pass test
+3. Refactor for clarity, performance
+4. Repeat
 
 
