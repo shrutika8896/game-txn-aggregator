@@ -7,8 +7,9 @@ import { SyncState, SyncStateSchema } from './../state/state.schema';
 @Module({
   imports: [
     AggregatorModule,
-    MongooseModule.forFeature([{ name: SyncState.name, schema: SyncStateSchema }]),
-    
+    MongooseModule.forFeature([
+      { name: SyncState.name, schema: SyncStateSchema },
+    ]),
   ],
   providers: [TransactionService],
 })

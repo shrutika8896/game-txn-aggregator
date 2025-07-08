@@ -10,7 +10,7 @@ export class TransactionService implements OnModuleInit {
   constructor(
     private readonly aggregatorService: AggregatorService,
     @InjectModel(SyncState.name) private syncStateModel: Model<SyncState>,
-  ) { }
+  ) {}
 
   onModuleInit() {
     setInterval(() => this.fetchInBatches(), 12000); // every 12s
@@ -20,20 +20,26 @@ export class TransactionService implements OnModuleInit {
     // This is a mock implementation. Replace with actual API call.
     // Simulating fetching transactions after a specific ID.
     console.log(`Fetching transactions after ID: ${afterId}`);
-    const tx = [{
-      _id: uuidv4(),
-      userId: '074092',
-      type: ['earned', 'spent', 'payout', 'requested'][Math.floor(Math.random() * 4)],
-      amount: Math.floor(Math.random() * 100),
-      createdAt: new Date()
-    },
-    {
-      _id: uuidv4(),
-      userId: '074093',
-      type: ['earned', 'spent', 'payout', 'requested'][Math.floor(Math.random() * 4)],
-      amount: Math.floor(Math.random() * 100),
-      createdAt: new Date()
-    }];
+    const tx = [
+      {
+        _id: uuidv4(),
+        userId: '074092',
+        type: ['earned', 'spent', 'payout', 'requested'][
+          Math.floor(Math.random() * 4)
+        ],
+        amount: Math.floor(Math.random() * 100),
+        createdAt: new Date(),
+      },
+      {
+        _id: uuidv4(),
+        userId: '074093',
+        type: ['earned', 'spent', 'payout', 'requested'][
+          Math.floor(Math.random() * 4)
+        ],
+        amount: Math.floor(Math.random() * 100),
+        createdAt: new Date(),
+      },
+    ];
 
     return tx;
   }
@@ -47,7 +53,7 @@ export class TransactionService implements OnModuleInit {
     await this.syncStateModel.updateOne(
       { key: 'afterId' },
       { $set: { value: id } },
-      { upsert: true }
+      { upsert: true },
     );
   }
 

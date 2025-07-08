@@ -3,7 +3,7 @@ import { Document } from 'mongoose';
 
 @Schema()
 export class UserAggregate extends Document {
-    @Prop({ required: true })
+  @Prop({ required: true })
   userId: string;
   @Prop({ default: 0 }) earned: number;
   @Prop({ default: 0 }) spent: number;

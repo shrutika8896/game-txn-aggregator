@@ -10,8 +10,12 @@ dotenv.config();
 
 @Module({
   imports: [
-    MongooseModule.forRoot(process.env.MONGO_URI || 'mongodb://localhost:27017/game'),
-    MongooseModule.forFeature([{ name: SyncState.name, schema: SyncStateSchema }]),
+    MongooseModule.forRoot(
+      process.env.MONGO_URI || 'mongodb://localhost:27017/game',
+    ),
+    MongooseModule.forFeature([
+      { name: SyncState.name, schema: SyncStateSchema },
+    ]),
     AggregatorModule,
     TransactionModule,
   ],

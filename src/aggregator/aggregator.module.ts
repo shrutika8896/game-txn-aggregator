@@ -7,11 +7,11 @@ import { UserAggregate, UserAggregateSchema } from './aggregator.schema';
 @Module({
   imports: [
     MongooseModule.forFeature([
-      { name: UserAggregate.name, schema: UserAggregateSchema }
-    ])
+      { name: UserAggregate.name, schema: UserAggregateSchema },
+    ]),
   ],
   providers: [AggregatorService],
   controllers: [AggregatorController],
-  exports: [AggregatorService]
+  exports: [AggregatorService],
 })
 export class AggregatorModule {}
