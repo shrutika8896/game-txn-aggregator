@@ -33,7 +33,20 @@ npm run start:dev
 GET /user/:userId/summary     → user aggregation
 GET /payouts                  → list of requested payouts
 ```
----
+curl requests:
+```
+curl --location --request GET 'http://localhost:3000/user/074093/summary' \
+--header 'Content-Type: application/json' \
+--data '{
+    "username": "shrutika"
+}'
+
+curl --location --request GET 'http://localhost:3000/payouts' \
+--header 'Content-Type: application/json' \
+--data '{
+    "username": "shrutika"
+}'
+```
 
 ## Implementation Overview
 #### Architecture & Approach
