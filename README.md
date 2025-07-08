@@ -1,4 +1,4 @@
-# 🕹️ Game Transaction Aggregator (NestJS + MongoDB)
+# 🕹️ Game Transaction Aggregator
 
 This microservice collects game transaction data from a mocked API, aggregates per-user balances, and exposes useful endpoints.
 
